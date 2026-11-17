@@ -1,7 +1,7 @@
 // ============================================================
 //  THIS IS THE ONLY FILE YOU NEED TO EDIT.
 //  Change the words between the quote marks, save, and refresh.
-//  Use {name} anywhere in a message and it becomes their name.
+//  Use {name} for their name, and \n to start a new line (poem style).
 // ============================================================
 
 window.SITE = {
@@ -14,39 +14,38 @@ window.SITE = {
   // How many questions each person gets (picked at random from the bank below)
   howMany: 10,
 
-  welcomeTitle: "Hello you 💛",
-  welcomeText: "Before we begin, what is your name?",
+  welcomeTitle: "Hello, you 💛",
+  welcomeText: "Before the story begins,\nwhisper me your name.",
 
-  // Shown after they type their name and tap "Get in"
-  greetingTitle: "Hey {name}, I knew you'd be here 🥰",
+  greetingTitle: "I know you, {name}. 🥰",
   greetingText:
-    "This link was made only for you. A few little questions, and every answer you pick is a good one. There is no wrong answer here.",
+    "I knew you'd come.\nThis little door was made\nfor you, and only you.\n\nPick what feels like home.\nThere are no wrong answers here.",
   privacyNote:
-    "Your answers go only to Anupam, by email. Nothing is posted publicly. You can skip the typed ones.",
+    "Your words travel only to Anupam,\nsoftly, by email. Never shown to anyone else.",
 
   // After every answer, one of these appears (never the same twice in a row)
   warmReplies: [
-    "I love that, {name}. That is so you. 💛",
-    "Beautiful answer. You always make things brighter. ✨",
-    "That made me smile, {name}. 😊",
-    "Your heart really shows in this one. 🥰",
-    "Exactly what I hoped you'd say. 🌸",
-    "{name}, you are such a lovely soul. 💫",
-    "That is such a good choice, and a good way to be. 🌈",
-    "I'm so glad you're in my life, {name}. 🤗",
-    "Warm, kind and real. That's you. 🌻",
-    "You just made my day a little better. ☀️"
+    "Like sunlight on a window,\nthat is so you, {name}. 💛",
+    "Soft and bright and true,\nthe way you always are. ✨",
+    "{name}, that answer\nmade my whole day smile. 😊",
+    "Your heart is showing,\nand it is beautiful. 🥰",
+    "Just what I hoped you'd say,\nlike a song I knew by heart. 🌸",
+    "Some people are like flowers.\nYou, {name}, are a garden. 💫",
+    "A gentle choice, a gentle soul,\nthe world needs more of you. 🌈",
+    "Thank you for being here, {name},\nthe days are warmer with you. 🤗",
+    "Kind and real and glowing,\nthat is you. 🌻",
+    "One small answer,\none big smile on my face. ☀️"
   ],
 
   // After the video, one of these closes the page (picked at random)
   closings: [
-    { title: "Thank you, {name} 💛", text: "You made me smile all the way through. I'm lucky to have you." },
-    { title: "You're a gem, {name} ✨", text: "Every answer felt like you. Keep shining, I'm always cheering for you." },
-    { title: "Love you, {name} 🥰", text: "Thanks for taking the time. You mean more to me than you know." },
-    { title: "That's all, {name} 🌸", text: "My day is brighter because of you. Talk soon!" },
-    { title: "Big hug, {name} 🤗", text: "Thank you for sharing a little of yourself with me. Take care and stay happy." },
-    { title: "You did it, {name} 🌈", text: "Thank you for being exactly who you are. See you very soon!" },
-    { title: "Always with you, {name} 🌻", text: "Near or far, you are in my heart. Thank you for this." }
+    { title: "Thank you, {name} 💛", text: "You wandered through my questions\nand left the whole place golden.\nI am lucky to know you." },
+    { title: "Stay shining, {name} ✨", text: "Every answer sounded like you,\nsoft as morning light.\nI'm always cheering for you." },
+    { title: "Love you, {name} 🥰", text: "Thank you for your time,\nyour words, your heart.\nYou mean more than I can say." },
+    { title: "Until next time, {name} 🌸", text: "The day is brighter now,\nbecause you passed through it.\nTalk soon." },
+    { title: "A big hug, {name} 🤗", text: "You shared a little of yourself,\nand it was a gift.\nStay happy, stay you." },
+    { title: "You did it, {name} 🌈", text: "Be exactly who you are,\nthe world is better for it.\nSee you very soon." },
+    { title: "Always with you, {name} 🌻", text: "Near or far,\nyou live in my heart.\nThank you for this." }
   ],
 
   // ---------- THE QUESTION BANK ----------
