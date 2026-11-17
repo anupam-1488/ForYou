@@ -74,6 +74,22 @@ window.SITE = {
     { type: "text", text: "What is a happy memory you love?" },
     { type: "text", text: "What is one thing you are looking forward to?" },
     { type: "text", text: "If you could say one kind thing to your younger self, what would it be?" },
-    { type: "text", text: "What is a tiny thing someone did that you never forgot?" }
+    { type: "text", text: "What is a tiny thing someone did that you never forgot?" },
+    { text: "How do you feel when we spend time together?", options: ["Light and happy", "Calm and safe", "Like myself", "Like time goes too fast"] },
+    { text: "What do you feel our bond is most like?", options: ["A warm blanket", "A quiet river", "Sunshine after rain", "An old song I love"] },
+    { text: "What do you wish for us?", options: ["More laughter together", "More time together", "To always stay close", "Many more memories"] },
+    { text: "When you think of me, what comes first?", options: ["A smile", "A memory", "Warmth", "Gratitude"] },
+    { text: "What do you value most in our relationship?", options: ["Trust", "Honest talks", "Laughing together", "Knowing I can count on you"] },
+    { text: "What do you wish for the people you love?", options: ["Good health", "Peace of mind", "Big happiness", "Every dream coming true"] },
+    { text: "How do you like to show love?", options: ["Words", "Time", "Little gifts", "Helping when it matters"] },
+    { text: "What would make our bond even stronger?", options: ["More calls and messages", "More meetups", "More honest sharing", "More small surprises"] },
+    { text: "How do you feel about the year ahead for us?", options: ["Excited", "Hopeful", "Grateful", "Ready for good things"] },
+    { text: "What do you wish more people knew about you?", options: ["How much I care", "How much I laugh", "How loyal I am", "How soft my heart is"] },
+    { type: "text", text: "What do you feel when you think of our relationship?" },
+    { type: "text", text: "What do you wish for, for us or for yourself?" },
+    { type: "text", text: "What is something you have always appreciated about me?" },
+    { type: "text", text: "What is one dream you would love to share with me?" },
+    { type: "text", text: "Finish this sentence: I feel most loved when..." },
+    { type: "text", text: "What do you wish we did together more often?" }
   ]
 };
