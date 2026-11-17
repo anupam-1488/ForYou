@@ -13,7 +13,7 @@ window.SITE = {
 
   // RECOMMENDED: paste a free Web3Forms key here (get it at https://web3forms.com by entering the
   // same email). It is more reliable than the line above. Leave "" to use sendTo instead.
-  accessKey: "",
+  accessKey: "4fed672a-5130-4d0d-8e4a-e10dda32bf99",
 
   // How many questions each person gets (picked at random from the bank below)
   howMany: 10,
