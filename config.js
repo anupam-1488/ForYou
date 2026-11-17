@@ -40,13 +40,13 @@ window.SITE = {
 
   // After the video, one of these closes the page (picked at random)
   closings: [
-    { title: "Thank you, {name} 💛", text: "You wandered through my questions\nand left the whole place golden.\nI am lucky to know you." },
-    { title: "Stay shining, {name} ✨", text: "Every answer sounded like you,\nsoft as morning light.\nI'm always cheering for you." },
-    { title: "Love you, {name} 🥰", text: "Thank you for your time,\nyour words, your heart.\nYou mean more than I can say." },
-    { title: "Until next time, {name} 🌸", text: "The day is brighter now,\nbecause you passed through it.\nTalk soon." },
-    { title: "A big hug, {name} 🤗", text: "You shared a little of yourself,\nand it was a gift.\nStay happy, stay you." },
-    { title: "You did it, {name} 🌈", text: "Be exactly who you are,\nthe world is better for it.\nSee you very soon." },
-    { title: "Always with you, {name} 🌻", text: "Near or far,\nyou live in my heart.\nThank you for this." }
+    { title: "Thank you, {name}", text: "You wandered through my questions\nand left the whole place golden.\nI am lucky to know you." },
+    { title: "Stay shining, {name}", text: "Every answer sounded like you,\nsoft as morning light.\nI'm always cheering for you." },
+    { title: "Love you, {name}", text: "Thank you for your time,\nyour words, your heart.\nYou mean more than I can say." },
+    { title: "Until next time, {name}", text: "The day is brighter now,\nbecause you passed through it.\nTalk soon." },
+    { title: "A big hug, {name}", text: "You shared a little of yourself,\nand it was a gift.\nStay happy, stay you." },
+    { title: "You did it, {name}", text: "Be exactly who you are,\nthe world is better for it.\nSee you very soon." },
+    { title: "Always with you, {name}", text: "Near or far,\nyou live in my heart.\nThank you for this." }
   ],
 
   // ---------- THE QUESTION BANK (all about our relationship) ----------

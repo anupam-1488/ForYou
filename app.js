@@ -14,6 +14,7 @@
     lastReply = n; return fill(S.warmReplies[n]);
   }
   document.title = S.title;
+  document.body.classList.add("night");
 
   // floating hearts in the background
   (function hearts() {
