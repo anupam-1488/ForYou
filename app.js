@@ -204,7 +204,7 @@
     return fetch(url, { method: "POST", signal: ctl ? ctl.signal : undefined,
       headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) })
       .then(function (r) { return r.json(); })
-      .then(function (j) { if (!(j && (j.success === true || j.success === "true"))) throw 0; sendState = "ok"; })
+      .then(function (j) { console.log("mail service said:", j); if (!(j && (j.success === true || j.success === "true")) || /activat/i.test(j.message || "")) throw 0; sendState = "ok"; })
       .catch(function () { sendState = "fail"; })
       .then(function () { clearTimeout(timer); });
   }
