@@ -14,7 +14,8 @@ window.SITE = {
   // How many questions each person gets (picked at random from the bank below)
   howMany: 10,
 
-  welcomeTitle: "Hello, you 💛",
+  welcomeEyebrow: "A LITTLE SOMETHING, JUST FOR YOU",
+  welcomeTitle: "Hello, you",
   welcomeText: "Before the story begins,\nwhisper me your name.",
 
   greetingTitle: "I know you, {name}. 🥰",

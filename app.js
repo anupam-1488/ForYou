@@ -27,16 +27,99 @@
     }
   })();
 
+  // 3D glossy heart (three.js). Falls back to a CSS heart if WebGL/CDN is unavailable.
+  function heart3d(box) {
+    function fallback() { box.innerHTML = '<div class="fallback-heart">❤</div>'; return function () {}; }
+    if (!window.THREE) return fallback();
+    var T = THREE, renderer;
+    try { renderer = new T.WebGLRenderer({ antialias: true, alpha: true }); } catch (e) { return fallback(); }
+    var w = box.clientWidth || 320, h = box.clientHeight || 320;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(w, h); renderer.outputEncoding = T.sRGBEncoding;
+    renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95;
+    box.appendChild(renderer.domElement);
+    var scene = new T.Scene(), camera = new T.PerspectiveCamera(35, w / h, 0.1, 100);
+    camera.position.set(0, 0, 9.5);
+
+    // studio-style reflections so the heart looks glossy and real
+    var env = new T.Scene(); env.background = new T.Color(0x2a0714);
+    [[0xb0a0a4, 0, 9, 3, 14, 3], [0xd0305a, -9, 1, 3, 3, 10], [0xd08040, 9, -1, 3, 3, 10], [0x6a3040, 0, -8, 4, 12, 2]].forEach(function (p) {
+      var m = new T.Mesh(new T.BoxGeometry(p[3], p[4], p[5]), new T.MeshBasicMaterial({ color: p[0] }));
+      m.position.set(p[1], p[2], 0); env.add(m);
+    });
+    var pm = new T.PMREMGenerator(renderer); scene.environment = pm.fromScene(env).texture; pm.dispose();
+
+    var s = new T.Shape(), x = 0, y = 0;
+    s.moveTo(x + 2.5, y + 2.5); s.bezierCurveTo(x + 2.5, y + 2.5, x + 2, y, x, y);
+    s.bezierCurveTo(x - 3, y, x - 3, y + 3.5, x - 3, y + 3.5);
+    s.bezierCurveTo(x - 3, y + 5.5, x - 1.5, y + 7.7, x + 2.5, y + 9.5);
+    s.bezierCurveTo(x + 6, y + 7.7, x + 8, y + 5.5, x + 8, y + 3.5);
+    s.bezierCurveTo(x + 8, y + 3.5, x + 8, y, x + 5, y);
+    s.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
+    var geo = new T.ExtrudeGeometry(s, { depth: 2.4, bevelEnabled: true, bevelThickness: 1.5, bevelSize: 1.3, bevelSegments: 16, curveSegments: 64 });
+    geo.rotateZ(Math.PI); geo.center();
+    var mat = new T.MeshPhysicalMaterial({ color: 0x6e0516, metalness: 0.05, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.08,
+      emissive: 0x28030a, emissiveIntensity: 0.4, envMapIntensity: 0.45 });
+    var heart = new T.Mesh(geo, mat); heart.scale.setScalar(0.3);
+    var group = new T.Group(); group.add(heart); scene.add(group);
+
+    scene.add(new T.AmbientLight(0xff9aa8, 0.12));
+    var key = new T.DirectionalLight(0xffffff, 0.9); key.position.set(3, 5, 6); scene.add(key);
+    var pl1 = new T.PointLight(0xff2a5a, 0.9, 30); pl1.position.set(-5, 2, 5); scene.add(pl1);
+    var pl2 = new T.PointLight(0xff8040, 0.7, 30); pl2.position.set(5, -3, 4); scene.add(pl2);
+
+    // sparkles drifting around the heart
+    var N = 70, pos = new Float32Array(N * 3), seed = [];
+    for (var k = 0; k < N; k++) { var r = 2.6 + Math.random() * 2, a2 = Math.random() * 6.28;
+      pos[k * 3] = Math.cos(a2) * r; pos[k * 3 + 1] = (Math.random() - 0.5) * 6; pos[k * 3 + 2] = Math.sin(a2) * r * 0.6; seed.push(Math.random() * 6); }
+    var pg = new T.BufferGeometry(); pg.setAttribute("position", new T.BufferAttribute(pos, 3));
+    var pts = new T.Points(pg, new T.PointsMaterial({ color: 0xffd9e6, size: 0.07, transparent: true, opacity: 0.85, blending: T.AdditiveBlending, depthWrite: false }));
+    scene.add(pts);
+
+    var px = 0, py = 0, raf, t0 = performance.now(), alive = true;
+    function move(e) { var p = e.touches ? e.touches[0] : e; px = (p.clientX / innerWidth - 0.5) * 2; py = (p.clientY / innerHeight - 0.5) * 2; }
+    window.addEventListener("pointermove", move); window.addEventListener("touchmove", move, { passive: true });
+    function resize() { var W = box.clientWidth, H = box.clientHeight; if (!W || !H) return; renderer.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix(); }
+    window.addEventListener("resize", resize);
+    function tick() {
+      if (!alive) return;
+      var t = (performance.now() - t0) / 1000, p = (t % 1.3) / 1.3;
+      var beat = 1 + 0.08 * (Math.exp(-Math.pow((p - 0.08) * 12, 2)) + 0.7 * Math.exp(-Math.pow((p - 0.27) * 12, 2)));
+      group.scale.setScalar(beat);
+      group.rotation.y += ((Math.sin(t * 0.7) * 0.75 + px * 0.6) - group.rotation.y) * 0.06;
+      group.rotation.x += ((py * 0.35 + Math.sin(t * 0.5) * 0.08) - group.rotation.x) * 0.06;
+      group.position.y = Math.sin(t * 1.1) * 0.12;
+      pts.rotation.y = t * 0.15;
+      var arr = pg.attributes.position.array;
+      for (var k = 0; k < N; k++) { arr[k * 3 + 1] += 0.004 + 0.003 * Math.sin(t + seed[k]); if (arr[k * 3 + 1] > 3.2) arr[k * 3 + 1] = -3.2; }
+      pg.attributes.position.needsUpdate = true;
+      renderer.render(scene, camera); raf = requestAnimationFrame(tick);
+    }
+    tick();
+    return function stop() {
+      alive = false; cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", move); window.removeEventListener("touchmove", move); window.removeEventListener("resize", resize);
+      geo.dispose(); mat.dispose(); pg.dispose(); renderer.dispose();
+      if (renderer.forceContextLoss) renderer.forceContextLoss();
+    };
+  }
+
   // 1. ask the name
+  var stopHeart = function () {};
+  function leaveHero() { stopHeart(); stopHeart = function () {}; document.body.classList.remove("hero"); }
   function welcome() {
-    render('<div class="emoji bounce">💌</div><h1>' + esc(S.welcomeTitle) + '</h1><p>' + esc(S.welcomeText) + '</p>' +
-      '<input type="text" id="nm" maxlength="40" placeholder="Your name" autocomplete="given-name">' +
-      '<div class="err" id="err"></div><div class="row"><button class="btn" id="go">Get in</button></div>');
-    var nm = $("nm"); nm.focus();
+    document.body.classList.add("hero");
+    render('<div class="hero-wrap"><div class="eyebrow">' + esc(S.welcomeEyebrow || "") + '</div>' +
+      '<div class="heart-box" id="hbox"><div class="glow"></div></div>' +
+      '<h1 class="hero-title">' + esc(S.welcomeTitle) + '</h1><p class="hero-sub">' + esc(S.welcomeText) + '</p>' +
+      '<div class="glass"><input type="text" id="nm" maxlength="40" placeholder="Your name" autocomplete="given-name">' +
+      '<div class="err" id="err"></div><button class="btn shine" id="go">Get in <span>→</span></button></div></div>');
+    stopHeart = heart3d($("hbox"));
+    var nm = $("nm");
     function go() {
       var v = nm.value.trim();
-      if (!v) { $("err").textContent = "Please type your name first 🙂"; return; }
-      name = v; greeting();
+      if (!v) { $("err").textContent = "Please whisper your name first ♡"; return; }
+      name = v; leaveHero(); greeting();
     }
     $("go").onclick = go;
     nm.onkeydown = function (e) { if (e.key === "Enter") go(); };
