@@ -1,6 +1,6 @@
 (function () {
   var S = window.SITE, app = document.getElementById("app");
-  var TEST = !S.sendTo;
+
   var name = "", picked = [], answers = [], i = 0, lastReply = -1;
 
   function fill(s) { return s.replace(/\{name\}/g, name || "friend"); }
@@ -187,36 +187,54 @@
     }
   }
 
-  // 4. send, then video, then a random closing message
-  function finish() {
-    render('<div class="emoji bounce">💌</div><h2>Sending your answers to Anupam…</h2><div class="err" id="err"></div>');
-    var lines = picked.map(function (q, k) { return (k + 1) + ". " + q.text + "\n   " + (answers[k] || "(skipped)"); }).join("\n\n");
-    if (TEST) { console.log(name + "\n" + lines); return video(lines); }
-    fetch("https://formsubmit.co/ajax/" + encodeURIComponent(S.sendTo), {
-      method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ _subject: "Answers from " + name + " (" + S.title + ")", _template: "box", _captcha: "false",
-        name: name, message: "From: " + name + "\n\n" + lines })
-    }).then(function (r) { return r.json(); }).then(function (j) {
-      if (j && (j.success === true || j.success === "true")) video(); else throw 0;
-    }).catch(function () {
-      render('<div class="emoji">😕</div><h2>That didn’t send</h2><p>Please check your internet and try again. Your answers are kept.</p>' +
-        '<div class="row"><button class="btn" id="retry">Try again</button></div>');
-      $("retry").onclick = finish;
-    });
+  // 4. send in the background, play the video, then a random closing message
+  var sendState = "pending", lastLines = "";
+  function send(lines) {
+    sendState = "pending";
+    if (!S.sendTo && !S.accessKey) { sendState = "ok"; return Promise.resolve(); }
+    var subject = "Answers from " + name + " (" + S.title + ")", msg = "From: " + name + "\n\n" + lines, url, payload;
+    if (S.accessKey) { // Web3Forms (preferred: free key tied to your email)
+      url = "https://api.web3forms.com/submit";
+      payload = { access_key: S.accessKey, subject: subject, from_name: name, name: name, message: msg };
+    } else {           // FormSubmit (no key, needs a one-time email activation)
+      url = "https://formsubmit.co/ajax/" + encodeURIComponent(S.sendTo);
+      payload = { _subject: subject, _template: "box", _captcha: "false", name: name, message: msg };
+    }
+    var ctl = window.AbortController ? new AbortController() : null, timer = setTimeout(function () { if (ctl) ctl.abort(); }, 12000);
+    return fetch(url, { method: "POST", signal: ctl ? ctl.signal : undefined,
+      headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (!(j && (j.success === true || j.success === "true"))) throw 0; sendState = "ok"; })
+      .catch(function () { sendState = "fail"; })
+      .then(function () { clearTimeout(timer); });
   }
 
-  function video(preview) {
+  function finish() {
+    lastLines = picked.map(function (q, k) { return (k + 1) + ". " + q.text + "\n   " + (answers[k] || "(skipped)"); }).join("\n\n");
+    send(lastLines);   // runs while the video plays, so nobody waits
+    video();
+  }
+
+  function video() {
     render('<video id="v" src="ending.mp4" playsinline autoplay></video><div class="row"><button class="btn ghost" id="skipv">Skip</button></div>');
     var v = $("v"), shown = false;
-    function end() { if (shown) return; shown = true; closing(preview); }
+    function end() { if (shown) return; shown = true; closing(); }
     v.onended = end; v.onerror = end; $("skipv").onclick = end;
     var p = v.play(); if (p && p.catch) p.catch(function () { v.controls = true; });
   }
 
-  function closing(preview) {
+  function closing() {
     var c = S.closings[rand(S.closings.length)];
-    render('<div class="emoji bounce">💛</div><h1>' + esc(fill(c.title)) + '</h1><p>' + esc(fill(c.text)) + '</p>' +
-      '');
+    render('<div class="emoji bounce">💛</div><h1>' + esc(fill(c.title)) + '</h1><p>' + esc(fill(c.text)) + '</p><div id="sendnote"></div>');
+    var note = $("sendnote");
+    function show() {
+      if (sendState === "fail") {
+        note.innerHTML = '<p class="sendfail">Your answers didn’t reach Anupam yet.</p><div class="row"><button class="btn" id="retry">Send again</button></div>';
+        $("retry").onclick = function () { note.innerHTML = '<p class="sendfail">Sending…</p>'; send(lastLines).then(show); };
+      } else if (sendState === "pending") { setTimeout(show, 400); }
+      else note.innerHTML = '<p class="sendok">✓ Your answers were sent to Anupam.</p>';
+    }
+    show();
   }
 
   welcome();

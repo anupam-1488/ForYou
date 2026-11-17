@@ -11,6 +11,10 @@ window.SITE = {
   // Answers are emailed here (through the free service formsubmit.co).
   sendTo: "naninoyal55@gmail.com",
 
+  // RECOMMENDED: paste a free Web3Forms key here (get it at https://web3forms.com by entering the
+  // same email). It is more reliable than the line above. Leave "" to use sendTo instead.
+  accessKey: "",
+
   // How many questions each person gets (picked at random from the bank below)
   howMany: 10,
 

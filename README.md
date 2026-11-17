@@ -50,6 +50,12 @@ Open http://localhost:8000 in your browser. Careful: it really sends, so a test 
 
 ## Step 1 — Make sure answers reach your email
 
+**Recommended (most reliable): Web3Forms.** Go to https://web3forms.com, enter naninoyal55@gmail.com,
+and they email you a free access key. Paste it into `accessKey` in `config.js`. Done, no activation.
+(formsubmit.co, described below, was unreachable on some networks, so it is only the fallback.)
+
+**Fallback: FormSubmit (used when `accessKey` is empty).**
+
 Answers are sent to the address in `config.js` (`sendTo`), through the free service **formsubmit.co**
 (no account, no key).
 

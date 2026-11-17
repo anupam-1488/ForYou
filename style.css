@@ -140,3 +140,6 @@ body.night .skip { color:#d9a3b2; }
 body.night .err { color:#ffb3b3; }
 body.night video { box-shadow:0 0 40px rgba(255,70,110,.45); border:1px solid rgba(255,255,255,.2); }
 body.night:not(.hero) { align-items:center; } body.night:not(.hero) .card { margin-top:0; }
+
+.sendok { color:#ffd5df; font-size:.85rem; opacity:.8; margin:14px 0 0; font-family:inherit; font-style:normal; }
+.sendfail { color:#ffb3b3; font-size:.9rem; margin:14px 0 0; font-family:inherit; font-style:normal; }
