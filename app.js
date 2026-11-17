@@ -1,107 +1,122 @@
 (function () {
   var S = window.SITE, app = document.getElementById("app");
-  var qs = S.questions, answers = {}, name = "", i = -1; // -1 = intro, qs.length = final screen
-  var DRAFT = "loq-draft";
   var TEST = !S.accessKey || S.accessKey.indexOf("PASTE-") === 0;
+  var name = "", picked = [], answers = [], i = 0, lastReply = -1;
 
-  try { var d = JSON.parse(sessionStorage.getItem(DRAFT) || "null"); if (d) { answers = d.a || {}; name = d.n || ""; } } catch (e) {}
-  function save() { try { sessionStorage.setItem(DRAFT, JSON.stringify({ a: answers, n: name })); } catch (e) {} }
+  function fill(s) { return s.replace(/\{name\}/g, name || "friend"); }
   function esc(s) { var d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
-  function render(html) { app.innerHTML = html; window.scrollTo(0, 0); }
+  function $(id) { return document.getElementById(id); }
+  function rand(n) { return Math.floor(Math.random() * n); }
+  function shuffle(a) { a = a.slice(); for (var k = a.length - 1; k > 0; k--) { var j = rand(k + 1), t = a[k]; a[k] = a[j]; a[j] = t; } return a; }
+  function render(html) { app.innerHTML = '<div class="screen">' + html + '</div>'; window.scrollTo(0, 0); }
+  function reply() {
+    var n; do { n = rand(S.warmReplies.length); } while (n === lastReply && S.warmReplies.length > 1);
+    lastReply = n; return fill(S.warmReplies[n]);
+  }
   document.title = S.title;
 
-  function intro() {
-    render(
-      '<div class="emoji">💌</div><h1>' + esc(S.title) + '</h1>' +
-      '<p class="from">from ' + esc(S.from) + '</p><p>' + esc(S.intro) + '</p>' +
-      '<p class="note">🔒 ' + esc(S.privacyNote) + '</p>' +
-      '<div class="row"><button class="btn" id="go">Let’s start</button></div>'
-    );
-    document.getElementById("go").onclick = function () { i = 0; question(); };
-  }
-
-  function question() {
-    var q = qs[i], pct = Math.round((i / qs.length) * 100), cur = answers[i] || "";
-    var body;
-    if (q.type === "choice") {
-      body = '<div class="opts">' + q.options.map(function (o, k) {
-        return '<button type="button" class="opt' + (cur === o ? " sel" : "") + '" data-k="' + k + '">' + esc(o) + '</button>';
-      }).join("") + '</div>';
-    } else {
-      body = '<textarea id="ans" placeholder="Type your answer here…" maxlength="2000"></textarea>';
+  // floating hearts in the background
+  (function hearts() {
+    var box = $("hearts"), E = ["💛", "🌸", "✨", "💕", "🌻"];
+    for (var k = 0; k < 14; k++) {
+      var s = document.createElement("span");
+      s.textContent = E[rand(E.length)];
+      s.style.left = rand(100) + "%"; s.style.fontSize = (14 + rand(18)) + "px";
+      s.style.animationDuration = (12 + rand(14)) + "s"; s.style.animationDelay = (-rand(20)) + "s";
+      box.appendChild(s);
     }
-    render(
-      '<div class="progress"><div style="width:' + pct + '%"></div></div>' +
-      '<div class="count">Question ' + (i + 1) + ' of ' + qs.length + '</div>' +
-      '<h2>' + esc(q.text) + '</h2>' + body + '<div class="err" id="err"></div>' +
-      '<div class="row">' + (i > 0 ? '<button class="btn ghost" id="back">Back</button>' : '') +
-      '<button class="btn" id="next">' + (i === qs.length - 1 ? "Finish" : "Next") + '</button></div>' +
-      (q.required ? "" : '<button class="skip" id="skip">Skip this one</button>')
-    );
-    var ta = document.getElementById("ans");
-    if (ta) ta.value = cur;
-    Array.prototype.forEach.call(app.querySelectorAll(".opt"), function (b) {
-      b.onclick = function () {
-        answers[i] = q.options[+b.dataset.k]; save();
-        Array.prototype.forEach.call(app.querySelectorAll(".opt"), function (x) { x.classList.remove("sel"); });
-        b.classList.add("sel");
+  })();
+
+  // 1. ask the name
+  function welcome() {
+    render('<div class="emoji bounce">💌</div><h1>' + esc(S.welcomeTitle) + '</h1><p>' + esc(S.welcomeText) + '</p>' +
+      '<input type="text" id="nm" maxlength="40" placeholder="Your name" autocomplete="given-name">' +
+      '<div class="err" id="err"></div><div class="row"><button class="btn" id="go">Get in</button></div>');
+    var nm = $("nm"); nm.focus();
+    function go() {
+      var v = nm.value.trim();
+      if (!v) { $("err").textContent = "Please type your name first 🙂"; return; }
+      name = v; greeting();
+    }
+    $("go").onclick = go;
+    nm.onkeydown = function (e) { if (e.key === "Enter") go(); };
+  }
+
+  // 2. "I know you"
+  function greeting() {
+    render('<div class="emoji bounce">🥰</div><h1>' + esc(fill(S.greetingTitle)) + '</h1><p>' + esc(fill(S.greetingText)) + '</p>' +
+      '<p class="note">🔒 ' + esc(S.privacyNote) + '</p><div class="row"><button class="btn" id="go">Let’s begin</button></div>');
+    $("go").onclick = function () {
+      picked = shuffle(S.questions).slice(0, Math.min(S.howMany, S.questions.length));
+      answers = []; i = 0; question();
+    };
+  }
+
+  // 3. questions, each followed by a warm reply
+  function question() {
+    var q = picked[i], total = picked.length, answered = false, body;
+    if (q.type === "text") body = '<textarea id="ans" placeholder="Type here…" maxlength="1500"></textarea>';
+    else body = '<div class="opts">' + shuffle(q.options.map(function (o, k) { return k; })).map(function (k) {
+      return '<button type="button" class="opt" data-k="' + k + '">' + esc(q.options[k]) + '</button>'; }).join("") + '</div>';
+    render('<div class="progress"><div style="width:' + Math.round(i / total * 100) + '%"></div></div>' +
+      '<div class="count">' + (i + 1) + ' of ' + total + '</div><h2>' + esc(q.text) + '</h2>' + body +
+      '<div class="bubble" id="bub"></div>' +
+      (q.type === "text" ? '<div class="row"><button class="btn" id="next">Share</button></div><button class="skip" id="skip">Skip this one</button>' :
+        '<div class="row"><button class="btn" id="next" disabled>Next</button></div>'));
+    var next = $("next"), bub = $("bub");
+    function warm() { bub.textContent = reply(); bub.classList.add("show"); }
+    function advance() { i++; if (i >= total) finish(); else question(); }
+    if (q.type === "text") {
+      next.onclick = function () {
+        if (answered) return advance();
+        var v = $("ans").value.trim();
+        if (!v) return;
+        answers[i] = v; answered = true; $("ans").readOnly = true; warm(); next.textContent = "Next";
+        $("skip").style.display = "none";
       };
-    });
-    function store() { if (ta) { answers[i] = ta.value.trim(); save(); } }
-    function go(n) { i = n; if (i >= qs.length) final(); else question(); }
-    document.getElementById("next").onclick = function () {
-      store();
-      if (q.required && !answers[i]) { document.getElementById("err").textContent = "Please answer this one."; return; }
-      go(i + 1);
-    };
-    var sk = document.getElementById("skip"); if (sk) sk.onclick = function () { answers[i] = ""; save(); go(i + 1); };
-    var bk = document.getElementById("back"); if (bk) bk.onclick = function () { store(); go(i - 1); };
+      $("skip").onclick = function () { answers[i] = ""; advance(); };
+    } else {
+      Array.prototype.forEach.call(app.querySelectorAll(".opt"), function (b) {
+        b.onclick = function () {
+          Array.prototype.forEach.call(app.querySelectorAll(".opt"), function (x) { x.classList.remove("sel"); });
+          b.classList.add("sel"); answers[i] = q.options[+b.dataset.k]; warm(); next.disabled = false;
+        };
+      });
+      next.onclick = advance;
+    }
   }
 
-  function final() {
-    render(
-      '<div class="progress"><div style="width:100%"></div></div>' +
-      '<h2>Almost done 🎉</h2>' +
-      (S.askName ? '<p>Who is this from? <span class="from">(optional)</span></p><input type="text" id="nm" maxlength="80" placeholder="Your name" autocomplete="given-name">' : '') +
-      '<p class="note" style="margin-top:16px">🔒 ' + esc(S.privacyNote) + '</p>' +
-      (TEST ? '<div class="testmode">Test mode: no access key set yet, so nothing is sent anywhere.</div>' : '') +
-      '<input class="hp" type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-      '<div class="err" id="err"></div>' +
-      '<div class="row"><button class="btn ghost" id="back">Back</button><button class="btn" id="send">Send my answers</button></div>'
-    );
-    var nm = document.getElementById("nm"); if (nm) nm.value = name;
-    document.getElementById("back").onclick = function () { if (nm) name = nm.value.trim(); i = qs.length - 1; question(); };
-    document.getElementById("send").onclick = function () {
-      if (nm) name = nm.value.trim(); save(); submit();
-    };
-  }
-
-  function submit() {
-    var btn = document.getElementById("send"), err = document.getElementById("err");
-    if (document.getElementById("hp").value) return; // bot
-    var lines = qs.map(function (q, k) { return (k + 1) + ". " + q.text + "\n   " + (answers[k] || "(skipped)"); }).join("\n\n");
-    if (!Object.keys(answers).some(function (k) { return answers[k]; })) { err.textContent = "Please answer at least one question."; return; }
-    if (TEST) { console.log(lines); return done(lines); }
-    btn.disabled = true; btn.textContent = "Sending…";
+  // 4. send, then video, then a random closing message
+  function finish() {
+    render('<div class="emoji bounce">💌</div><h2>Sending your answers to Anupam…</h2><div class="err" id="err"></div>');
+    var lines = picked.map(function (q, k) { return (k + 1) + ". " + q.text + "\n   " + (answers[k] || "(skipped)"); }).join("\n\n");
+    if (TEST) { console.log(name + "\n" + lines); return video(lines); }
     fetch("https://api.web3forms.com/submit", {
       method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        access_key: S.accessKey, subject: "Answers from " + (name || "someone") + " — " + S.title,
-        from_name: name || "Anonymous", name: name || "Anonymous", message: lines
-      })
+      body: JSON.stringify({ access_key: S.accessKey, subject: "Answers from " + name + " (" + S.title + ")",
+        from_name: name, name: name, message: "From: " + name + "\n\n" + lines })
     }).then(function (r) { return r.json(); }).then(function (j) {
-      if (j && j.success) done(); else throw new Error((j && j.message) || "failed");
+      if (j && j.success) video(); else throw 0;
     }).catch(function () {
-      btn.disabled = false; btn.textContent = "Send my answers";
-      err.textContent = "Sorry, that didn’t send. Please check your internet and tap again — your answers are kept.";
+      render('<div class="emoji">😕</div><h2>That didn’t send</h2><p>Please check your internet and try again. Your answers are kept.</p>' +
+        '<div class="row"><button class="btn" id="retry">Try again</button></div>');
+      $("retry").onclick = finish;
     });
   }
 
-  function done(preview) {
-    try { sessionStorage.removeItem(DRAFT); } catch (e) {}
-    render('<div class="emoji">💛</div><h1>' + esc(S.thankYou) + '</h1>' +
-      (preview ? '<p class="testmode">Test mode — here is what would have been sent:</p><dl class="review"><dd>' + esc(preview) + '</dd></dl>' : ''));
+  function video(preview) {
+    render('<video id="v" src="ending.mp4" playsinline autoplay></video><div class="row"><button class="btn ghost" id="skipv">Skip</button></div>');
+    var v = $("v"), shown = false;
+    function end() { if (shown) return; shown = true; closing(preview); }
+    v.onended = end; v.onerror = end; $("skipv").onclick = end;
+    var p = v.play(); if (p && p.catch) p.catch(function () { v.controls = true; });
   }
 
-  intro();
+  function closing(preview) {
+    var c = S.closings[rand(S.closings.length)];
+    render('<div class="emoji bounce">💛</div><h1>' + esc(fill(c.title)) + '</h1><p>' + esc(fill(c.text)) + '</p>' +
+      (preview ? '<p class="testmode">Test mode (no key yet), so nothing was sent. It would have sent:</p><pre class="review">' + esc("From: " + name + "\n\n" + preview) + '</pre>' : ''));
+  }
+
+  welcome();
 })();

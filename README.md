@@ -1,7 +1,11 @@
 # Questions for loved ones 💌
 
-A tiny phone-friendly website. A friend or family member opens your link, answers
-your questions one at a time, taps **Send**, and the answers arrive in **your email**.
+A tiny phone-friendly website. A friend or family member opens your link, types their name, gets a warm
+greeting, answers 10 random questions (each answer gets a kind reply), then watches your video (`ending.mp4`)
+and sees a random closing message. Their answers arrive in **your email**.
+
+To change the video, replace `ending.mp4` with another MP4 of the same name (keep it small, a few MB).
+Questions, warm replies and closing messages are all in `config.js`.
 
 No server, no database, no cost. Just 4 files.
 
