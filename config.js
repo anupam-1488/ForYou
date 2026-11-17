@@ -8,8 +8,8 @@ window.SITE = {
   title: "Just for you",
   from: "Anupam",
 
-  // Get a free key at https://web3forms.com (see README). Leave as-is for test mode.
-  accessKey: "PASTE-YOUR-WEB3FORMS-KEY-HERE",
+  // Answers are emailed here (through the free service formsubmit.co).
+  sendTo: "naninoyal55@gmail.com",
 
   // How many questions each person gets (picked at random from the bank below)
   howMany: 10,

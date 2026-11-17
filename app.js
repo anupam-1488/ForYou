@@ -1,6 +1,6 @@
 (function () {
   var S = window.SITE, app = document.getElementById("app");
-  var TEST = !S.accessKey || S.accessKey.indexOf("PASTE-") === 0;
+  var TEST = !S.sendTo;
   var name = "", picked = [], answers = [], i = 0, lastReply = -1;
 
   function fill(s) { return s.replace(/\{name\}/g, name || "friend"); }
@@ -91,12 +91,12 @@
     render('<div class="emoji bounce">💌</div><h2>Sending your answers to Anupam…</h2><div class="err" id="err"></div>');
     var lines = picked.map(function (q, k) { return (k + 1) + ". " + q.text + "\n   " + (answers[k] || "(skipped)"); }).join("\n\n");
     if (TEST) { console.log(name + "\n" + lines); return video(lines); }
-    fetch("https://api.web3forms.com/submit", {
+    fetch("https://formsubmit.co/ajax/" + encodeURIComponent(S.sendTo), {
       method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ access_key: S.accessKey, subject: "Answers from " + name + " (" + S.title + ")",
-        from_name: name, name: name, message: "From: " + name + "\n\n" + lines })
+      body: JSON.stringify({ _subject: "Answers from " + name + " (" + S.title + ")", _template: "box", _captcha: "false",
+        name: name, message: "From: " + name + "\n\n" + lines })
     }).then(function (r) { return r.json(); }).then(function (j) {
-      if (j && j.success) video(); else throw 0;
+      if (j && (j.success === true || j.success === "true")) video(); else throw 0;
     }).catch(function () {
       render('<div class="emoji">😕</div><h2>That didn’t send</h2><p>Please check your internet and try again. Your answers are kept.</p>' +
         '<div class="row"><button class="btn" id="retry">Try again</button></div>');
@@ -115,7 +115,7 @@
   function closing(preview) {
     var c = S.closings[rand(S.closings.length)];
     render('<div class="emoji bounce">💛</div><h1>' + esc(fill(c.title)) + '</h1><p>' + esc(fill(c.text)) + '</p>' +
-      (preview ? '<p class="testmode">Test mode (no key yet), so nothing was sent. It would have sent:</p><pre class="review">' + esc("From: " + name + "\n\n" + preview) + '</pre>' : ''));
+      '');
   }
 
   welcome();

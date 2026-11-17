@@ -24,11 +24,10 @@ When you change a question and push again, the live site updates in about a minu
 
 **Is it fine to share with friends?** Yes, with common-sense care:
 - Anyone with the link can open it. The page asks for no password.
-- Answers go **only to your email** (through a free service called Web3Forms). They are
-  **not** shown on the website and **not** stored in GitHub. Web3Forms passes the message
-  on to you; see their privacy policy at web3forms.com.
-- Your **email address is not visible** on the site. The "access key" you paste in
-  `config.js` is designed to be public — it can only *send to* your inbox, not read it.
+- Answers go **only to your email** (through the free service formsubmit.co). They are
+  **not** shown on the website and **not** stored in GitHub. FormSubmit passes the message
+  on to you; see their privacy policy at formsubmit.co.
+- The email address is in `config.js` (visible in the page source); use the FormSubmit alias to hide it, see Step 1.
 - The site tells every visitor, before they start and before they send, who gets their
   answers. Keep that note in `config.js` (`privacyNote`) accurate.
 - It asks for nothing except answers and an optional name. No tracking, no cookies, no
@@ -47,21 +46,21 @@ cd ~/Desktop/loved-ones-questions
 python3 -m http.server 8000
 ```
 
-Open http://localhost:8000 in your browser. Until you add a key it runs in **test mode**:
-you see what *would* be sent, but nothing is sent. Press `Ctrl+C` in Terminal to stop.
+Open http://localhost:8000 in your browser. Careful: it really sends, so a test answer will email you. Press `Ctrl+C` in Terminal to stop.
 
-## Step 1 — Get your free key (so answers reach your email)
+## Step 1 — Make sure answers reach your email
 
-1. Go to https://web3forms.com and enter **your email**. Click *Create Access Key*.
-2. They email you a key (a long code like `a1b2c3d4-...`). Open `config.js`, replace
-   `PASTE-YOUR-WEB3FORMS-KEY-HERE` with it, keep the quote marks. Save.
-3. Test it: open the site, answer a question, tap Send. An email should arrive
-   (check spam the first time).
+Answers are sent to the address in `config.js` (`sendTo`), through the free service **formsubmit.co**
+(no account, no key).
 
-*Why Web3Forms?* It's free (about 250 answers/month), needs no account or server, and works on any
-static host. **Trade-off:** answers arrive as emails, not a tidy spreadsheet, and the free plan has a monthly cap.
-If you later want a dashboard, Formspree or a Google Form are alternatives; this site is built so only the
-`submit()` function in `app.js` would change.
+**One-time activation:** the first time anyone submits (do a test yourself first), FormSubmit emails
+that inbox an "Activate" link. Click it once, and after that every answer arrives as an email
+(check spam the first time). Until you activate, answers are NOT delivered.
+
+*Trade-offs:* the email address sits in `config.js`, so it is visible to anyone who views the page source
+(and the repo is public), which means it could receive spam. After activating, FormSubmit gives you a
+random alias in the activation email; you can put that alias in `sendTo` instead of the email
+to hide it. Answers arrive as emails, not a spreadsheet. Web3Forms or Formspree are alternatives.
 
 ## Step 2 — Edit your questions
 
