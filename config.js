@@ -48,48 +48,45 @@ window.SITE = {
     { title: "Always with you, {name} 🌻", text: "Near or far,\nyou live in my heart.\nThank you for this." }
   ],
 
-  // ---------- THE QUESTION BANK ----------
-  // Every option should be a happy one. A few questions let people type instead
-  // (type: "text"). Add as many as you like; each person gets `howMany` of them.
+  // ---------- THE QUESTION BANK (all about our relationship) ----------
+  // Every option is a happy one. type: "text" lets people type instead.
+  // Add as many as you like; each person gets `howMany` of them, at random.
   questions: [
-    { text: "What kind of morning feels the best?", options: ["Slow with hot tea or coffee", "Sunshine and a walk", "Waking up to a nice message", "A long lazy sleep-in"] },
-    { text: "Which treat would make you happiest right now?", options: ["Something sweet", "Hot street food", "Home-cooked food", "A cold drink in the sun"] },
-    { text: "What is your kind of perfect evening?", options: ["Sunset and quiet", "Music and dancing", "Family dinner", "A good movie at home"] },
-    { text: "Pick a feeling you love the most:", options: ["Peace", "Excitement", "Being loved", "Laughing until it hurts"] },
-    { text: "If you could travel anywhere tomorrow, you'd choose:", options: ["Mountains", "A beach", "A new city", "Back to my hometown"] },
-    { text: "Which colour matches your mood today?", options: ["Sunny yellow", "Calm blue", "Warm orange", "Fresh green"] },
-    { text: "What makes a day feel special?", options: ["A call from someone I love", "Time to myself", "Good food", "Doing something kind"] },
-    { text: "Which superpower would you pick?", options: ["Make everyone smile", "Fly anywhere", "Pause time", "Always know the right words"] },
-    { text: "What is your favourite way to relax?", options: ["Music", "Sleep", "Chatting with friends", "Being out in nature"] },
-    { text: "Which season feels like you?", options: ["Spring: fresh starts", "Summer: bright and warm", "Monsoon: cosy and dreamy", "Winter: calm and snug"] },
-    { text: "What do you want more of this year?", options: ["Laughter", "Adventures", "Rest", "Time with loved ones"] },
-    { text: "A gift that would make you happy:", options: ["A handwritten note", "A surprise outing", "Your favourite food", "A hug that lasts a bit longer"] },
-    { text: "How do you like to celebrate good news?", options: ["Tell everyone", "A quiet smile to myself", "Treat the family", "A little dance"] },
-    { text: "What is the best sound in the world?", options: ["Laughter", "Rain", "Music I love", "A familiar voice saying my name"] },
-    { text: "Which one sounds like a great weekend?", options: ["A short trip", "Friends over", "Family time", "Doing nothing at all"] },
-    { text: "What do you appreciate most in people?", options: ["Kindness", "Honesty", "A good sense of humour", "Being there when it counts"] },
-    { text: "Pick a little joy:", options: ["Fresh flowers", "A favourite song on repeat", "A warm blanket", "A message from an old friend"] },
-    { text: "What gives you energy?", options: ["Good company", "Quiet time", "Moving around", "Something delicious"] },
-    { type: "text", text: "Tell me one small thing that makes you smile." },
-    { type: "text", text: "What is a happy memory you love?" },
-    { type: "text", text: "What is one thing you are looking forward to?" },
-    { type: "text", text: "If you could say one kind thing to your younger self, what would it be?" },
-    { type: "text", text: "What is a tiny thing someone did that you never forgot?" },
+    // what it is
+    { text: "If our relationship were a place, it would be:", options: ["A cosy home", "A sunny beach", "A quiet garden", "A mountain view"] },
+    { text: "If our relationship were a season, it would be:", options: ["Spring, always new", "Summer, bright and warm", "Monsoon, soft and dreamy", "Winter, snug and calm"] },
+    { text: "If our relationship were a song, it would be:", options: ["A gentle lullaby", "A happy dance tune", "An old favourite", "A song that never ends"] },
+    { text: "What is our relationship most like?", options: ["A warm blanket", "A quiet river", "Sunshine after rain", "A light in the dark"] },
+    { text: "What word fits us best?", options: ["Trust", "Care", "Laughter", "Home"] },
+    { text: "What is the heart of our relationship?", options: ["Understanding", "Memories", "Being there", "Honesty"] },
+    // how it feels
     { text: "How do you feel when we spend time together?", options: ["Light and happy", "Calm and safe", "Like myself", "Like time goes too fast"] },
-    { text: "What do you feel our bond is most like?", options: ["A warm blanket", "A quiet river", "Sunshine after rain", "An old song I love"] },
+    { text: "When you think of us, what do you feel first?", options: ["A smile", "Warmth", "Gratitude", "Peace"] },
+    { text: "How does it feel to know I am in your life?", options: ["Comforting", "Happy", "Lucky", "Supported"] },
+    { text: "How do you feel after we talk?", options: ["Lighter", "Cheerful", "Cared for", "Recharged"] },
+    { text: "Where do you feel our bond the most?", options: ["In my heart", "In small moments", "In shared laughter", "In silence that feels easy"] },
+    { text: "What feeling do we share the most?", options: ["Joy", "Comfort", "Trust", "Love"] },
+    // what is wished for
     { text: "What do you wish for us?", options: ["More laughter together", "More time together", "To always stay close", "Many more memories"] },
-    { text: "When you think of me, what comes first?", options: ["A smile", "A memory", "Warmth", "Gratitude"] },
-    { text: "What do you value most in our relationship?", options: ["Trust", "Honest talks", "Laughing together", "Knowing I can count on you"] },
-    { text: "What do you wish for the people you love?", options: ["Good health", "Peace of mind", "Big happiness", "Every dream coming true"] },
-    { text: "How do you like to show love?", options: ["Words", "Time", "Little gifts", "Helping when it matters"] },
+    { text: "What do you wish we did more often?", options: ["Talk for hours", "Meet and travel", "Laugh till we cry", "Make small plans together"] },
+    { text: "What do you wish for our future?", options: ["To grow closer", "To stay as we are", "To share big moments", "To never lose touch"] },
     { text: "What would make our bond even stronger?", options: ["More calls and messages", "More meetups", "More honest sharing", "More small surprises"] },
-    { text: "How do you feel about the year ahead for us?", options: ["Excited", "Hopeful", "Grateful", "Ready for good things"] },
-    { text: "What do you wish more people knew about you?", options: ["How much I care", "How much I laugh", "How loyal I am", "How soft my heart is"] },
-    { type: "text", text: "What do you feel when you think of our relationship?" },
-    { type: "text", text: "What do you wish for, for us or for yourself?" },
+    { text: "What is your biggest wish for the people you love?", options: ["Good health", "Peace of mind", "Big happiness", "Every dream coming true"] },
+    { text: "If you could give us one gift, it would be:", options: ["More time", "A shared trip", "Endless laughter", "A promise to stay close"] },
+    // what you value, how you love
+    { text: "What do you value most in our relationship?", options: ["Trust", "Honest talks", "Laughing together", "Knowing I can count on you"] },
+    { text: "How do you like to show love?", options: ["Words", "Time", "Little gifts", "Helping when it matters"] },
+    { text: "When do you feel most loved?", options: ["When someone listens", "When someone remembers me", "When we are together", "When someone checks in"] },
+    { text: "What do you love most about the way we are?", options: ["We can be ourselves", "We laugh easily", "We understand each other", "We stand by each other"] },
+    // typed, from the heart
+    { type: "text", text: "What is our relationship to you, in your own words?" },
+    { type: "text", text: "How does it feel to have me in your life?" },
+    { type: "text", text: "What do you wish for us?" },
     { type: "text", text: "What is something you have always appreciated about me?" },
-    { type: "text", text: "What is one dream you would love to share with me?" },
     { type: "text", text: "Finish this sentence: I feel most loved when..." },
-    { type: "text", text: "What do you wish we did together more often?" }
+    { type: "text", text: "What is a moment with me you will never forget?" },
+    { type: "text", text: "What do you wish we did together more often?" },
+    { type: "text", text: "What is one dream you would love to share with me?" },
+    { type: "text", text: "What is one thing you have never told me but would like to?" }
   ]
 };
