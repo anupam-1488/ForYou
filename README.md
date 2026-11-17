@@ -11,7 +11,7 @@ No server, no database, no cost. Just 4 files.
 
 | File | What it is |
 |---|---|
-| `config.js` | **The only file you edit**: your name, intro, questions, email key |
+| `config.js` | **The only file you edit**: your name, intro, questions, email address |
 | `index.html`, `style.css`, `app.js` | The site itself (no need to touch) |
 
 ---
@@ -86,7 +86,7 @@ git push -u origin main
 
 (Replace `YOURNAME` with your GitHub username. It may ask you to sign in.)
 
-> Note: your repo is public, so your **questions and the access key are public** (the key is meant to be).
+> Note: your repo is public, so your **questions and the email address in config.js are public**.
 > Don't write anything private in `config.js`.
 
 ## Step 4 — Go live
