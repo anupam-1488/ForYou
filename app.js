@@ -119,17 +119,34 @@
     function go() {
       var v = nm.value.trim();
       if (!v) { $("err").textContent = "Please whisper your name first ♡"; return; }
-      name = v; leaveHero(); greeting();
+      name = v; stopHeart(); stopHeart = function () {}; greeting();
     }
     $("go").onclick = go;
     nm.onkeydown = function (e) { if (e.key === "Enter") go(); };
   }
 
-  // 2. "I know you"
+  // 2. "I know you": a full cinematic screen
   function greeting() {
-    render('<div class="emoji bounce">🥰</div><h1>' + esc(fill(S.greetingTitle)) + '</h1><p>' + esc(fill(S.greetingText)) + '</p>' +
-      '<p class="note">🔒 ' + esc(S.privacyNote) + '</p><div class="row"><button class="btn" id="go">Let’s begin</button></div>');
+    document.body.classList.add("hero");
+    var initial = esc(name.charAt(0).toUpperCase());
+    var title = esc(S.greetingTitle).replace("{name}", '<span class="glowname">' + esc(name) + '</span>');
+    var lines = fill(S.greetingText).split("\n").map(function (l, k) {
+      return l ? '<span class="line" style="animation-delay:' + (1.1 + k * 0.45) + 's">' + esc(l) + '</span>' : '<span class="gap"></span>';
+    }).join("");
+    var burst = "";
+    for (var k = 0; k < 22; k++) {
+      var ang = (k / 22) * 6.283 + Math.random() * 0.3, dist = 110 + rand(110);
+      burst += '<i style="--dx:' + Math.round(Math.cos(ang) * dist) + 'px;--dy:' + Math.round(Math.sin(ang) * dist) + 'px;font-size:' + (12 + rand(14)) + 'px;animation-delay:' + (rand(300) / 1000) + 's">' + ["❤", "✨", "💕", "🌸"][rand(4)] + '</i>';
+    }
+    render('<div class="hero-wrap greet">' +
+      '<div class="orb-stage"><div class="ring r1"></div><div class="ring r2"></div><div class="orbit"><b>❤</b><b>✨</b><b>❤</b></div>' +
+      '<div class="orb"><span>' + initial + '</span></div><div class="burst">' + burst + '</div></div>' +
+      '<h1 class="greet-title">' + title + '</h1>' +
+      '<div class="greet-text">' + lines + '</div>' +
+      '<p class="pill" style="animation-delay:' + (1.3 + 0.45 * 7) + 's">🔒 ' + esc(S.privacyNote).replace(/\n/g, "<br>") + '</p>' +
+      '<button class="btn shine begin" id="go" style="animation-delay:' + (1.6 + 0.45 * 7) + 's">Let’s begin <span>→</span></button></div>');
     $("go").onclick = function () {
+      leaveHero();
       picked = shuffle(S.questions).slice(0, Math.min(S.howMany, S.questions.length));
       answers = []; i = 0; question();
     };

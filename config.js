@@ -18,7 +18,7 @@ window.SITE = {
   welcomeTitle: "Hello, you",
   welcomeText: "Before the story begins,\nwhisper me your name.",
 
-  greetingTitle: "I know you, {name}. 🥰",
+  greetingTitle: "I know you, {name}.",
   greetingText:
     "I knew you'd come.\nThis little door was made\nfor you, and only you.\n\nPick what feels like home.\nThere are no wrong answers here.",
   privacyNote:
